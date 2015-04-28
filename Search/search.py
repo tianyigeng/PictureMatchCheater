@@ -45,15 +45,35 @@ def isConnected(board, pos1, pos2):
                      (direct(board, pos1, (pos1[1], pos2[0])) and direct(board, pos2, (pos1[1], pos2[0])))
 
     def twoCorners(board, pos1, pos2):
-        pass
+        for col in range(len(board)):
+            if direct(board, (pos1[0], col), pos1) and oneCorner(board, (pos1[0], col), pos2):
+                return True
+        for row in range(len(board[0])):
+            if direct(board, (row, pos1[1]), pos1) and oneCorner(board, (row, pos1[1]), pos2):
+                return True
+
+        for col in range(len(board)):
+            if direct(board, (pos2[0], col), pos2) and oneCorner(board, (pos2[0], col), pos1):
+                return True
+        for row in range(len(board[0])):
+            if direct(board, (row, pos2[1]), pos2) and oneCorner(board, (row, pos2[1]), pos1):
+                return True
+
+        return False
+
+    if board[pos1[0]][pos1[1]] == board[pos2[0]][pos2[1]]:
+        return twoCorners(board, pos1, pos2)
+    else:
+        return False
 
 
 def main():
-    ret = preprocess()
-    for line in ret:
+    board = preprocess()
+    for line in board:
         for arg in line:
             print arg, 
         print 
+    print isConnected(board, (2, 1), (3, 1))
 
 
 if __name__ == '__main__':
