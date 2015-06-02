@@ -1,3 +1,5 @@
+import itertools
+
 def preprocess(FILE):
     """
     Read from file, return a int matrix surrounded by 0. 
@@ -16,20 +18,21 @@ def preprocess(FILE):
 
 def myRange(x1, x2):
     if (x1 < x2):
-        return range(x1, x2)
+        return range(x1 + 1, x2)
     else:
-        return range(x2, x1)
+        return range(x2 + 1, x1)
 
 def direct(board, pos1, pos2):
     if pos1[0] == pos2[0]:
-        # print range(pos1[1] + 1, pos2[1])
-        for i in myRange(pos1[1] + 1, pos2[1]):
+        # print pos1, pos2
+        # print myRange(pos1[1] + 1, pos2[1])
+        for i in myRange(pos1[1], pos2[1]):
             if board[pos1[0]][i] != 0:
                 return False
         return True
     elif pos1[1] == pos2[1]:
         # print range(pos1[0] + 1, pos2[0])
-        for i in myRange(pos1[0] + 1, pos2[0]):
+        for i in myRange(pos1[0], pos2[0]):
             # print (i, pos2[1])
             if board[i][pos1[1]] != 0:
                 return False
@@ -42,7 +45,7 @@ def oneCorner(board, pos1, pos2):
         return False
     else:
         return (board[pos1[0]][pos2[1]] == 0 and direct(board, pos1, (pos1[0], pos2[1])) and direct(board, pos2, (pos1[0], pos2[1]))) or\
-                 (board[pos2[0]][pos1[1]] == 0 and direct(board, pos1, (pos2[0], pos1[1])) and direct(board, pos2, (pos2[0], pos1[1])))
+                (board[pos2[0]][pos1[1]] == 0 and direct(board, pos1, (pos2[0], pos1[1])) and direct(board, pos2, (pos2[0], pos1[1])))
 
 def twoCorners(board, pos1, pos2):
     for col in range(len(board[0])):
@@ -50,7 +53,6 @@ def twoCorners(board, pos1, pos2):
             # print 1
             return True
     for row in range(len(board)):
-        # 
         if board[row][pos1[1]] == 0 and direct(board, (row, pos1[1]), pos1) and oneCorner(board, (row, pos1[1]), pos2):
             # print (row, pos1[1])
             return True
@@ -112,18 +114,25 @@ def findSolution(board):
             (1, 4), (1, 2), (2, 2), (1, 1), (2, 3), List
             (1, 3), (2, 4)
     """
-
+    ret = []
     while True:
         flag = True
         boardDict = asDict(board)
         for i in boardDict:
-            print boardDict[i]
-            if len(boardDict[i]) == 2:
-                if isConnected(board, boardDict[i][0], boardDict[i][1]):
-                    cancelItem(board, boardDict[i][0], boardDict[i][1])
-                    flag = False
+            if i != 0 and len(boardDict[i]) >= 2:
+                iterlist = itertools.combinations(boardDict[i], 2)
+                for pair in iterlist:
+                    if isConnected(board, pair[0], pair[1]):
+                        cancelItem(board, pair[0], pair[1])
+                        ret.append(pair[0])
+                        ret.append(pair[1])
+                        flag = False
+                        continue
         if flag:
             break
+
+    return ret
+        
 
 def cancelItem(board, pos1, pos2):
     x1, y1 = pos1[0], pos1[1]
@@ -142,11 +151,8 @@ def printBoard(board):
         print 
 
 def main():
-    board = preprocess('test.txt')
+    board = preprocess('92.txt')
     printBoard(board)
-    
-    # for i in asDict(board):
-    #     print i, asDict(board)[i]
 
     pos1 = (1, 1)
     pos2 = (2, 3)
@@ -154,10 +160,11 @@ def main():
     trans2 = (2, 2)
     print pos1, pos2
 
-    print direct(board, pos1, trans)
+    print direct(board, trans, trans2)
+    print direct(board, pos2, trans2)
     print oneCorner(board, trans, pos2)
     print twoCorners(board, trans2, pos2)
-    # findSolution(board)
+    print findSolution(board)
 
 
 if __name__ == '__main__':
