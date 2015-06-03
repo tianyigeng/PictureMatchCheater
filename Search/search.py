@@ -9,6 +9,9 @@ def preprocess(FILE):
         for line in f:
             line = line[:-1]
             ret.append([(int)(arg) for arg in line.split(' ')])
+    return ret
+
+def surround0(ret):
     ret.insert(0, [0 for _ in range(2 + len(ret[0]))])
     for i in range(1, len(ret)):
         ret[i].insert(0, 0)
@@ -111,7 +114,7 @@ def findSolution(board):
         set of valid operations to cancel all items
         i.e. 
             (3, 2), (3, 4), (2, 1), (3, 1), (3, 3), 
-            (1, 4), (1, 2), (2, 2), (1, 1), (2, 3), List
+            (1, 4), (1, 2), (2, 2), (1, 1), (2, 3),
             (1, 3), (2, 4)
     """
     ret = []
@@ -151,21 +154,23 @@ def printBoard(board):
         print 
 
 def main():
-    board = preprocess('92.txt')
+    board = surround0(preprocess('92.txt'))
     printBoard(board)
 
-    pos1 = (1, 1)
-    pos2 = (2, 3)
-    trans = (1, 2)
-    trans2 = (2, 2)
-    print pos1, pos2
+    # pos1 = (1, 1)
+    # pos2 = (2, 3)
+    # trans = (1, 2)
+    # trans2 = (2, 2)
+    # print pos1, pos2
 
-    print direct(board, trans, trans2)
-    print direct(board, pos2, trans2)
-    print oneCorner(board, trans, pos2)
-    print twoCorners(board, trans2, pos2)
+    # print direct(board, trans, trans2)
+    # print direct(board, pos2, trans2)
+    # print oneCorner(board, trans, pos2)
+    # print twoCorners(board, trans2, pos2)
     print findSolution(board)
 
+def solve(mat):
+    return findSolution(surround0(mat))
 
 if __name__ == '__main__':
     main()
