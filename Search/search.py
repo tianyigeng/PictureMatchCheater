@@ -134,7 +134,16 @@ def findSolution(board):
         if flag:
             break
 
-    return ret
+    # printBoard(board)
+    board.pop(len(board) - 1)
+    board.pop(0)
+    for i in range(len(board)):
+        board[i].pop(len(board[i]) - 1)
+        board[i].pop(0)
+    # printBoard(board)
+    sumnum = sum([board[i][j] for i in range(len(board)) for j in range(len(board[0]))])
+
+    return (ret, board, sumnum == 0)
         
 
 def cancelItem(board, pos1, pos2):
@@ -142,9 +151,9 @@ def cancelItem(board, pos1, pos2):
     x2, y2 = pos2[0], pos2[1]
     board[x1][y1] = 0
     board[x2][y2] = 0
-    print pos1, pos2, 'Cancelled'
-    print 'New Board: '
-    printBoard(board)
+    # print pos1, pos2, 'Cancelled'
+    # print 'New Board: '
+    # printBoard(board)
 
 
 def printBoard(board):
